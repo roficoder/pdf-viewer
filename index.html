@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="file" id="fileInput">
+    <button id="uploadButton">Upload</button>
+    <div id="previewArea"></div>
+
+    <script>
+        // Get references to the HTML elements
+        const fileInput = document.getElementById('fileInput');
+        const uploadButton = document.getElementById('uploadButton');
+        const previewArea = document.getElementById('previewArea');
+
+        // Add event listener to the upload button
+        uploadButton.addEventListener('click', () => {
+            // Trigger the file input click event
+            fileInput.click();
+        });
+
+        // Add event listener to the file input change event
+        fileInput.addEventListener('change', () => {
+            // Get the selected file
+            const file = fileInput.files[0];
+
+            // Check if a file is selected
+            if (file) {
+                // Check if the selected file is an image or PDF
+                if (file.type.startsWith('image/') || file.type === 'application/pdf') {
+                    // Create a FileReader object to read the file
+                    const reader = new FileReader();
+
+                    // Set up the FileReader onload event
+                    reader.onload = () => {
+                        console.log(reader.result);
+                        // Create an image element for image files or embed element for PDF files
+                        const previewElement = file.type.startsWith('image/')
+                            ? `<img src="${reader.result}" alt="Preview">`
+                            : `<embed src="${reader.result}" type="application/pdf" width="500px" height="600px">`;
+
+                        // Display the preview in the preview area
+                        previewArea.innerHTML = previewElement;
+                    };
+
+                    // Read the selected file as data URL
+                    reader.readAsDataURL(file);
+                } else {
+                    // Display an error message for unsupported file types
+                    previewArea.innerHTML = 'Unsupported file type. Please select an image or PDF file.';
+                }
+            } else {
+                // Clear the preview area if no file is selected
+                previewArea.innerHTML = '';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
